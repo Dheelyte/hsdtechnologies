@@ -37,7 +37,7 @@ export default function Triptych() {
             data-cursor="OPEN"
             aria-expanded={active}
             style={{ flexGrow: open === null ? 1 : active ? 2.4 : 0.7, transition: "flex-grow 0.7s var(--ease)" }}
-            className={`relative min-w-0 basis-0 overflow-hidden rounded-xl border p-7 text-left transition-colors duration-500 ${
+            className={`relative min-w-0 overflow-hidden rounded-xl border p-7 text-left transition-colors duration-500 md:basis-0 ${
               active ? "border-ink bg-ink text-paper" : "border-ink/15 bg-paper text-ink"
             }`}
           >
@@ -51,9 +51,12 @@ export default function Triptych() {
             <p className={`micro mt-3 ${active ? "text-paper/60" : "text-ink/60"}`}>
               {pillar.label.toUpperCase()}
             </p>
+            {/* proof text: always visible on mobile; hover/tap-revealed on md+ */}
             <p
               className={`mt-5 max-w-xs text-sm leading-relaxed transition-all duration-500 ${
-                active ? "translate-y-0 text-paper/70 opacity-100" : "translate-y-3 opacity-0"
+                active
+                  ? "translate-y-0 text-paper/70 opacity-100"
+                  : "translate-y-0 text-ink/60 opacity-100 md:translate-y-3 md:opacity-0"
               }`}
             >
               {pillar.proof}

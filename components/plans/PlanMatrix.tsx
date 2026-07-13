@@ -107,7 +107,7 @@ export default function PlanMatrix() {
       {/* ————— mobile: per-plan accordions ————— */}
       <div className="mt-10 space-y-4 md:hidden">
         {PLANS.map((plan, pi) => (
-          <details key={plan.id} className="group rounded-lg border border-ink/20">
+          <details key={plan.id} open className="group rounded-lg border border-ink/20">
             <summary className="flex cursor-pointer items-center justify-between px-5 py-4 [&::-webkit-details-marker]:hidden">
               <span className="font-display text-lg font-bold uppercase">
                 {plan.name}

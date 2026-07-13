@@ -42,7 +42,7 @@ export default function PlanExplorer({ recommended }: { recommended: PlanId | nu
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
               style={{ flexGrow: grow, transition: "flex-grow 0.7s var(--ease)" }}
-              className={`relative min-w-0 basis-0 overflow-hidden rounded-xl border bg-paper p-7 md:flex md:flex-col ${
+              className={`relative min-w-0 overflow-hidden rounded-xl border bg-paper p-7 md:flex md:basis-0 md:flex-col ${
                 selected === i ? "" : "hidden md:flex"
               } ${
                 isRec

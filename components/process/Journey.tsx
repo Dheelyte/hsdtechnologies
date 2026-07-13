@@ -89,8 +89,13 @@ export default function Journey() {
           className="guard-path"
         />
       </svg>
-      {/* vertical line (mobile) */}
+      {/* vertical line (mobile) — draws itself with scroll like the desktop snake */}
       <div className="absolute bottom-0 left-[11px] top-0 w-px bg-ink/10 md:hidden" aria-hidden />
+      <motion.div
+        style={{ scaleY: pathLength }}
+        className="absolute bottom-0 left-[10.5px] top-0 w-0.5 origin-top bg-ink md:hidden"
+        aria-hidden
+      />
 
       {/* fixed mini-map */}
       <nav
