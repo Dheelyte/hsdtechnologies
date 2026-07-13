@@ -1,26 +1,359 @@
 @import "tailwindcss";
 
+/* ————— HSD DESIGN TOKENS — "Digital Atelier" (light) ————— */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0a0a0f;
+  --ink-2: #12121c;
+  --paper: #f4f1ea;
+  --accent: #c6ff3d;
+  --line: rgba(244, 241, 234, 0.14);
+  --line-dark: rgba(10, 10, 15, 0.15);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-paper: var(--paper);
+  --color-accent: var(--accent);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* Hide native cursor only when custom cursor is active (fine pointers) */
+@media (pointer: fine) {
+  .cursor-live,
+  .cursor-live a,
+  .cursor-live button {
+    cursor: none;
+  }
+}
+
+/* ————— TEXTURE: film grain (neutral — works on light and dark chapters) ————— */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ————— TYPE UTILITIES ————— */
+.text-stroke {
+  -webkit-text-stroke: 1.5px var(--ink);
+  color: transparent;
+}
+.text-stroke-paper {
+  -webkit-text-stroke: 1.5px var(--paper);
+  color: transparent;
+}
+.text-stroke-accent {
+  -webkit-text-stroke: 1.5px var(--accent);
+  color: transparent;
+}
+@media (min-width: 768px) {
+  .text-stroke, .text-stroke-paper, .text-stroke-accent {
+    -webkit-text-stroke-width: 2px;
+  }
+}
+
+/* ————— MARKER HIGHLIGHT (accent behind ink text — light-theme accent moment) ————— */
+.marker {
+  background: var(--accent);
+  color: var(--ink);
+  padding: 0 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.micro {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ————— MARQUEE ————— */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-speed, 28s) linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+
+/* ————— LABEL ROLL (magnetic buttons) ————— */
+/* The duplicate label sits absolutely below the visible one, so the roll
+   container is exactly one line tall and clips it until hover. */
+.roll {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.roll-inner {
+  position: relative;
+  display: block;
+  transition: transform 0.6s var(--ease);
+}
+.roll-dup {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+}
+a:hover .roll-inner,
+button:hover .roll-inner,
+.group:hover .roll-inner {
+  transform: translateY(-100%);
+}
+
+/* ————— HYDRATION GUARD ————— */
+/* Scroll/entrance animations SSR in their hidden state (translated, opacity 0).
+   A client component stamps `hydrated` on <html> as soon as React takes over.
+   If that never happens (broken chunk, blocked JS) or takes too long, these
+   CSS animations force the content visible — animations beat inline styles. */
+@keyframes reveal-guard {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+html:not(.hydrated) .reveal-guard {
+  animation: reveal-guard 0.7s var(--ease) 2s forwards;
+}
+html:not(.hydrated) .guard-path {
+  stroke-dasharray: 1 !important;
+  stroke-dashoffset: 0 !important;
+}
+
+/* ————— SHIMMER SWEEP (Academy title) ————— */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  60%, 100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(
+    100deg,
+    var(--paper) 40%,
+    var(--accent) 50%,
+    var(--paper) 60%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 4.5s var(--ease) infinite;
+}
+
+/* ————— ORBIT (plan badge, contact ✦) ————— */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(10px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
+}
+.orbit {
+  animation: orbit 6s linear infinite;
+}
+
+/* ————— PULSE DOT ————— */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+.pulse-dot { position: relative; }
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--accent);
+  animation: pulse-ring 1.8s var(--ease) infinite;
+}
+
+/* ————— GLITCH (404) ————— */
+@keyframes glitch-a {
+  0%, 90%, 100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+  92% { transform: translate(-6px, 3px); clip-path: inset(15% 0 55% 0); }
+  94% { transform: translate(5px, -2px); clip-path: inset(60% 0 10% 0); }
+  96% { transform: translate(-3px, -4px); clip-path: inset(35% 0 40% 0); }
+  98% { transform: translate(4px, 2px); clip-path: inset(5% 0 80% 0); }
+}
+.glitch { position: relative; }
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0.85;
+}
+.glitch::before {
+  color: var(--accent);
+  animation: glitch-a 3s steps(1) infinite;
+}
+.glitch::after {
+  color: #6d5cff;
+  animation: glitch-a 3s steps(1) infinite reverse;
+}
+
+/* ————— SCAN / RADAR sweep (Process: Discover) ————— */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.radar-sweep {
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(198, 255, 61, 0.5) 40deg, transparent 60deg);
+  animation: spin 3s linear infinite;
+}
+
+/* ————— TYPING CARET ————— */
+@keyframes blink { 0%, 45% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.caret::after {
+  content: "▌";
+  color: var(--accent);
+  animation: blink 1s steps(1) infinite;
+  margin-left: 2px;
+}
+
+/* ————— MINI BROWSER "builds itself" loop (Services micro-wow) ————— */
+@keyframes build-in {
+  0%, 12% { opacity: 0; transform: translateY(6px); background: rgba(244,241,234,0.12); }
+  22% { opacity: 1; transform: translateY(0); background: rgba(244,241,234,0.12); }
+  55% { background: rgba(244,241,234,0.12); }
+  70%, 88% { opacity: 1; background: var(--build-final, var(--accent)); }
+  96%, 100% { opacity: 0; }
+}
+.build-el {
+  animation: build-in 5s var(--ease) infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* ————— UPTIME graph draw loop ————— */
+@keyframes draw-line {
+  0% { stroke-dashoffset: 620; }
+  55%, 90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+.uptime-path {
+  stroke-dasharray: 620;
+  animation: draw-line 5s linear infinite;
+}
+
+/* ————— ORBITING chat bubbles (Social glyph) ————— */
+@keyframes orbit-wide {
+  from { transform: rotate(0deg) translateX(64px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(64px) rotate(-360deg); }
+}
+.orbit-bubble {
+  animation: orbit-wide 8s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* ————— BLOB morph (Branding glyph, team avatars) ————— */
+@keyframes blob {
+  0%, 100% { border-radius: 58% 42% 60% 40% / 55% 48% 52% 45%; }
+  33% { border-radius: 40% 60% 45% 55% / 60% 40% 60% 40%; }
+  66% { border-radius: 52% 48% 38% 62% / 44% 58% 42% 56%; }
+}
+.blob {
+  animation: blob 8s ease-in-out infinite;
+}
+
+/* ————— CHECK draw ————— */
+.check-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.6s var(--ease);
+}
+.in-view .check-path {
+  stroke-dashoffset: 0;
+}
+
+/* ————— PERFORATED ticket edge (Academy course cards) ————— */
+.ticket {
+  -webkit-mask-image: radial-gradient(circle 7px at 0 50%, transparent 96%, black 100%),
+    radial-gradient(circle 7px at 100% 50%, transparent 96%, black 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle 7px at 0 50%, transparent 96%, black 100%),
+    radial-gradient(circle 7px at 100% 50%, transparent 96%, black 100%);
+  mask-composite: intersect;
+}
+
+/* ————— EMAIL underline draw ————— */
+.draw-underline {
+  position: relative;
+}
+.draw-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+.draw-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* ————— Hide scrollbars on drag rails ————— */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* ————— PRELOADER FAIL-SAFE ————— */
+/* Pure CSS: if client JS never hydrates (broken chunk, blocked script),
+   the overlay dissolves on its own instead of trapping the visitor. */
+@keyframes preloader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+.preloader-failsafe {
+  animation: preloader-failsafe 0.6s ease 4s forwards;
+}
+
+/* ————— FOCUS: adapts to section color ————— */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ————— REDUCED MOTION ————— */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

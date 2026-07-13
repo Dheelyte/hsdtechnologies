@@ -1,65 +1,83 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import Hero from "@/components/home/Hero";
+import TrustStrip from "@/components/home/TrustStrip";
+import AboutSection from "@/components/home/AboutSection";
+import ServicesIndex from "@/components/home/ServicesIndex";
+import ServiceScroller from "@/components/services/ServiceScroller";
+import PlansClient from "@/components/plans/PlansClient";
+import Journey from "@/components/process/Journey";
+import AcademySection from "@/components/home/AcademySection";
+import TeamSection from "@/components/home/TeamSection";
+import ContactSection from "@/components/home/ContactSection";
+import ChapterMarker from "@/components/ui/ChapterMarker";
+import RevealText from "@/components/ui/RevealText";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "HSD Technologies — Building Digital Futures",
+  description:
+    "Digital solutions agency: web development, website maintenance, social media management, and branding & identity. Plans, process, team, and the upcoming HSD Academy — all in one place.",
+};
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* 00 — HERO */}
+      <Hero />
+      <TrustStrip />
+
+      {/* 01 — ABOUT: mission, pillars, values, ticker */}
+      <AboutSection />
+
+      {/* 02 — SERVICES: hover index + sticky split-screen deep dive */}
+      <ServicesIndex />
+      <div className="bg-paper text-ink">
+        <ServiceScroller />
+      </div>
+
+      {/* 03 — PLANS: explorer, quiz, full matrix */}
+      <div id="plans" className="scroll-mt-10">
+        <section className="bg-paper px-6 pb-14 pt-20 text-ink md:px-10 md:pt-28">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <ChapterMarker num="03" title="SERVICE PLANS" />
+            <p className="micro text-ink/40">PRICING ON CONSULTATION — ALWAYS TAILORED</p>
+          </div>
+          <h2 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.98] tracking-tight md:text-6xl">
+            <RevealText text="Choose your" />{" "}
+            <span className="marker inline-block -rotate-1 italic">
+              <RevealText text="growth speed." delay={0.15} />
+            </span>
+          </h2>
+        </section>
+        <PlansClient />
+      </div>
+
+      {/* 04 — PROCESS: the snaking journey */}
+      <div id="process" className="scroll-mt-10 bg-paper text-ink">
+        <section className="px-6 pb-4 pt-20 md:px-10 md:pt-28">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <ChapterMarker num="04" title="OUR PROCESS" />
+            <p className="micro text-ink/40">EVERY ENGAGEMENT, SAME FIVE MOVES</p>
+          </div>
+          <h2 className="max-w-4xl font-display text-4xl font-bold uppercase leading-[0.98] tracking-tight md:text-6xl">
+            <RevealText text="Five steps." />{" "}
+            <span className="marker inline-block -rotate-1 italic">
+              <RevealText text="Zero chaos." delay={0.15} />
+            </span>
+          </h2>
+        </section>
+        <div data-chapter>
+          <Journey />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+
+      {/* 05 — ACADEMY: countdown, vision, tickets, waitlist */}
+      <AcademySection />
+
+      {/* 06 — TEAM */}
+      <TeamSection />
+
+      {/* 07 — CONTACT */}
+      <ContactSection />
+    </>
   );
 }
